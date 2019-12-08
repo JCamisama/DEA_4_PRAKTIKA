@@ -1,0 +1,7 @@
+ALDATUTAKO KLASEAK:
+
+	- Zinematografikoa
+	- Aktorea
+	- Pelikula
+	- GraphHash
+	
