@@ -53,5 +53,11 @@ public abstract class Zinematografikoa {
 	}
 	
 	public abstract int getErlazioKopurua();
+	
+	public void inprimatuIzenaPageRank(){
+		
+		System.out.println("\n"+this.izena+"------->"+ this.pageRank);
+		
+	}
 
 }

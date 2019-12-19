@@ -314,8 +314,11 @@ public class GraphHash {
 	/********************************************PAGERANK LABORATEGIA**************************/
 	
 	public HashMap<Zinematografikoa, Double> pageRank(){
-				//AurreB: Erlazioak bidirekzionalak dira
-				//POST: emaitza aktore edo pelikula bakoitzaren PageRank algoritmoaren balioa da
+				//AurreB: Grafoa beteta dago eta erlazioak bidirekzionalak dira.
+				/*PostB: Elementu bakoitzari bere pageRank-a esleituko zaio. Gainera, elementu-pageRank
+				 		 egitura duen HashMap bat bueltatuko du.
+				 */
+				//Kostua:
 		
 		HashMap<Zinematografikoa, Double> emaitza = new HashMap<Zinematografikoa, Double>();
 		double danpingFactor = 0.85;
@@ -326,6 +329,7 @@ public class GraphHash {
 		//Taula betetzen (hasierako pageRank-a esleituz.
 		double hasierakoPageRank = 1.0/ (double) elementuKopurua;
 		
+		Stopwatch kronometroa = new Stopwatch();
 		//Taula hasieratzen
 		for (Zinematografikoa elementua: this.grafoa.keySet()){
 			
@@ -336,7 +340,7 @@ public class GraphHash {
 		
 		int iterazioKop = 1;
 		
-		this.inprimatuPageRankIterazioInformazioa(emaitza, iterazioKop);
+		//this.inprimatuPageRankIterazioInformazioa(emaitza, iterazioKop);
 		//pageRank-aren kalkulua egiten (errorea atalasea baino txikiagoa izan arte)
 		while(errorea > atalaseErrore){
 			
@@ -358,8 +362,8 @@ public class GraphHash {
 			}
 			
 			iterazioKop++;
-			this.inprimatuPageRankIterazioInformazioa(emaitza, iterazioKop);
-			
+			//this.inprimatuPageRankIterazioInformazioa(emaitza, iterazioKop);
+			System.out.println("\nIterazio kopurua honaino: "+ iterazioKop+"\n\n");
 			
 		}
 		
@@ -375,7 +379,7 @@ public class GraphHash {
 		}
 		
 		System.out.println("pageRank-en batura: "+ pageRankBatura);
-		
+		System.out.println("Tardatutako denbora: "+ kronometroa.elapsedTime()+" segundu.");
 		return emaitza;
 	}			 
 			
@@ -423,5 +427,127 @@ public class GraphHash {
 		System.out.println("\nIterazio kopurua honaino: "+ pIterazioKop+"\n\n");
 		
 	}
+	
+	
+	
+	public ArrayList<Zinematografikoa> bilatzailea(Zinematografikoa pZerena){
+		
+		//AurreB: Zerrenda ez da null izango.
+		/*PostB:  Elementuarekin erlazionatuta dauden elementuen zerrenda ordenatua bueltauko da, pageRank-aren arabera.
+		 		  ordena handienetik txikienera izango da.
+		 */
+		//Kostua: O( n*log(n) ), non 'n' zerrendaren elementu kopurua den.	
+		
+		ArrayList<Zinematografikoa> emaitza = this.grafoa.get(pZerena);
+		
+		emaitza = this.ordenatuZinematografikoak(emaitza);
+		
+		for (Zinematografikoa elementua: emaitza){
+			
+			elementua.inprimatuIzenaPageRank();
+		}
+		
+		return emaitza;	
+	}
 
+	
+	
+	private ArrayList<Zinematografikoa> ordenatuZinematografikoak(ArrayList<Zinematografikoa> pOrdenatzekoa){
+		
+		//Aurre-Baldintza:	Zerrenda ez da null izango.
+		//Post-Baldinta: 	Zerrenda handienetik txikienera ordenatuta bueltatuko da, pageRank-aren arabera.
+		//Kostua:			 O( n*log(n) ), non 'n' zerrendaren elementu kopurua den.
+		
+		ArrayList<Zinematografikoa> ordenatua = pOrdenatzekoa;
+		
+		this.ordenatuMergePageRank(ordenatua, 0, ordenatua.size()-1);
+		
+		
+		return ordenatua;
+	}
+	
+	private void ordenatuMergePageRank(ArrayList<Zinematografikoa> pOrdenatzekoa, int pHasiera, int pAmaiera){
+	
+
+		//Aurre-Baldintza:	pHasiera eta pAmaiera zerrendaren luzera baino txikiagoak izango dira.
+		//Post-Baldinta: 	Zerrenda handienetik txikienera ordenatuta bueltatuko da, pageRank-aren arabera.
+		//Kostua:			 O( n*log(n) ), non 'n' zerrendaren elementu kopurua den.
+		
+		
+		if(pHasiera < pAmaiera){
+			
+			this.ordenatuMergePageRank(pOrdenatzekoa, pHasiera, ((pHasiera +pAmaiera)/2));
+			this.ordenatuMergePageRank(pOrdenatzekoa, ((pHasiera +pAmaiera)/2) +1, pAmaiera);
+			this.bateratuZerrendak(pOrdenatzekoa, pHasiera, ((pHasiera +pAmaiera)/2), pAmaiera);
+
+		
+		}
+	}
+	
+	private void bateratuZerrendak(ArrayList<Zinematografikoa> pOrdenatzekoa, int pHasiera, int pErdikoa, int pAmaiera){
+			
+			//Aurre-Baldintza:	pHasiera, pErdikoa eta pAmaiera zerrendaren luzera baino txikiagoak izango dira.
+			//Post-Baldinta: 	Zerrenda handienetik txikienera ordenatuta bueltatuko da, pageRank-aren arabera.
+			//Kostua:			O(n); Non 'n' zerrendaren elementu kopurua den.
+			
+			ArrayList<Zinematografikoa>	bateratua	= new ArrayList<Zinematografikoa>(pAmaiera-pHasiera+1);
+			int							ezker		= pHasiera;
+			int							eskuin		= pErdikoa + 1;
+			Zinematografikoa			ezkerAktore	= null;
+			Zinematografikoa			eskuAktore	= null;
+			
+			while( ezker <= pErdikoa && eskuin <= pAmaiera){
+				
+				
+				ezkerAktore = pOrdenatzekoa.get(ezker);
+				eskuAktore	= pOrdenatzekoa.get(eskuin);
+				 
+				if( ezkerAktore.getPageRank() >= eskuAktore.getPageRank()){
+					
+					bateratua.add(ezkerAktore);
+					ezker++;
+				}
+				
+				else{
+					
+					bateratua.add(eskuAktore);
+					eskuin++;
+				}	
+			}
+			
+			if( ezker > pErdikoa ){
+	
+				while( eskuin <= pAmaiera ){
+					
+					eskuAktore	= pOrdenatzekoa.get(eskuin);
+					bateratua.add(eskuAktore);
+					eskuin++;
+				}			
+			}
+			
+			else{
+				
+				while( ezker <= pErdikoa ){
+					
+					ezkerAktore = pOrdenatzekoa.get(ezker);
+					bateratua.add(ezkerAktore);
+					ezker++;
+				}
+			}
+			
+			for(int i = pHasiera; i <= pAmaiera; i++){
+				
+				pOrdenatzekoa.set(i, bateratua.get(i-pHasiera));
+			}
+			
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
