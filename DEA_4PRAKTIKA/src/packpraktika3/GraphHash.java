@@ -340,7 +340,7 @@ public class GraphHash {
 			
 		}
 		
-		int iterazioKop = 1;
+		int iterazioKop = 0;
 		
 		//this.inprimatuPageRankIterazioInformazioa(emaitza, iterazioKop);
 		//pageRank-aren kalkulua egiten (errorea atalasea baino txikiagoa izan arte)
@@ -447,19 +447,34 @@ public class GraphHash {
 	
 	public ArrayList<Zinematografikoa> bilatzailea(Zinematografikoa pZerena){
 		
-		//AurreB: Zerrenda ez da null izango.
+		//AurreB: Ez dago.
 		/*PostB:  Elementuarekin erlazionatuta dauden elementuen zerrenda ordenatua bueltauko da, pageRank-aren arabera.
 		 		  ordena handienetik txikienera izango da.
+		 		  pZerena null bada, null bueltatuko du eta pZerena grafoan ez badago, errore mezua pantailaratuko du.
 		 */
-		//Kostua: O( n*log(n) ), non 'n' zerrendaren elementu kopurua den.	
+		//Kostua: O( n*log(n) ), non 'n' zerrendaren elementu kopurua den.
 		
-		ArrayList<Zinematografikoa> emaitza = this.grafoa.get(pZerena);
+		ArrayList<Zinematografikoa> emaitza = null;
 		
-		emaitza = this.ordenatuZinematografikoak(emaitza);
+		if( pZerena != null){
 		
-		for (Zinematografikoa elementua: emaitza){
+			 emaitza = this.grafoa.get(pZerena);
 			
-			elementua.inprimatuIzenaPageRank();
+			if( emaitza != null ){
+			
+				emaitza = this.ordenatuZinematografikoak(emaitza);
+				
+				for (Zinematografikoa elementua: emaitza){
+					
+					elementua.inprimatuIzenaPageRank();
+				}
+			}
+			
+			else{
+				
+				System.out.println("\nElementua ez dago grafoan.");
+			}
+		
 		}
 		
 		return emaitza;	
@@ -557,7 +572,26 @@ public class GraphHash {
 			
 	}
 	
-	
+	public boolean ordenatutaDago(ArrayList<Zinematografikoa> pZerrenda){
+		
+		boolean							ordenatua 		= true;
+		Zinematografikoa				zinematoEzker	= null;
+		Zinematografikoa				zinematoEskuin	= null;
+		int								posizioa		= 1; //Eskuineko aktoretik hasiko da
+		
+		while( ordenatua && posizioa < pZerrenda.size() ){
+			
+			zinematoEzker  = pZerrenda.get(posizioa-1);
+			zinematoEskuin = pZerrenda.get(posizioa);
+			
+			ordenatua = zinematoEzker.getPageRank() >= zinematoEskuin.getPageRank();
+			posizioa++;
+			
+		}
+		
+		return ordenatua;
+		
+	}
 	
 	
 	

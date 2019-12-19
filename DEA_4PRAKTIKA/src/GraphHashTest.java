@@ -45,13 +45,13 @@ public class GraphHashTest {
 	}
 
 	@Test
-	public void testPageRank() {
+	public void testPageRankPartekatutakoFitxategiarekin() {
 		
 		
 		
 		gHau = GraphHash.getNireGrafoa();
 		 
-		 System.out.println("\t\t\t*******1. Aktorerik eta pelikularik ez*******\n");
+		 System.out.println("\t\t\t*******PageRank-en kalkulua klasean konpartitutako fitxategiarekin*******\n");
 		 System.out.println("Filma eta pelikula guztiak irakurriko dira orain:\n\n ");
 		 cHau.fitxategiaIreki("Fitxategiak/probakPageRank.txt");
 		 cHau.fitxategiaIrakurri();
@@ -74,13 +74,46 @@ public class GraphHashTest {
 	}
 	
 	
+	
 	@Test
-	public void testBilatzailea() {
+	public void testPageRankKonektatutaFitxategiarekin() {
+		
 		
 		
 		gHau = GraphHash.getNireGrafoa();
 		 
-		 System.out.println("\t\t\t*******1. Aktorerik eta pelikularik ez*******\n");
+		 System.out.println("\t\t\t*******PageRank-en kalkulua Konektatuta Fitxategiarekin******\n");
+		 System.out.println("Filma eta pelikula guztiak irakurriko dira orain:\n\n ");
+		 cHau.fitxategiaIreki("Fitxategiak/Konektatuta.txt");
+		 cHau.fitxategiaIrakurri();
+		 cHau.fitxategiaItxi();
+		 
+		 //Irakurritako aktore eta pelikula kopuruak adierazten
+		 System.out.println("\nAktore kopurua: " + AktoreGuztiak.getNireAktoreak().luzera());
+		 System.out.println("\nPelikula kopurua: " + PelikulaGuztiak.getNirePelikulak().luzera());
+		 
+		 
+		 
+		 gHau.grafoaSortu(AktoreGuztiak.getNireAktoreak(), PelikulaGuztiak.getNirePelikulak());
+		 System.out.println("\nGrafoaren nodo kopurua: " + gHau.size()+"\n\n\n\n");
+		 //gHau.grafoaInprimatu();
+		 
+		 gHau.pageRank();
+		 
+		 gHau.erreseteatuFrogetan();
+		
+	}
+	
+	
+	
+	@Test
+	public void testFilmsActors20162017Fitxategiarekin() {
+		
+		
+		
+		gHau = GraphHash.getNireGrafoa();
+		 
+		 System.out.println("\t\t\t*******PageRank-en kalkulua Konektatuta Fitxategiarekin******\n");
 		 System.out.println("Filma eta pelikula guztiak irakurriko dira orain:\n\n ");
 		 cHau.fitxategiaIreki("Fitxategiak/FilmsActors20162017.txt");
 		 cHau.fitxategiaIrakurri();
@@ -98,10 +131,91 @@ public class GraphHashTest {
 		 
 		 gHau.pageRank();
 		 
-		 Aktorea aktoreHau = AktoreGuztiak.getNireAktoreak().aktoreaBilatu("Bale, Christian");
-		 
-		 gHau.bilatzailea(aktoreHau);
+		 gHau.erreseteatuFrogetan();
 		
+	}
+	
+	@Test
+	public void testBilatzaileaPartekatutakoFitxategiarekin() {
+		
+		
+		gHau = GraphHash.getNireGrafoa();
+		 
+		 System.out.println("\t\t\t*******1. Aktorerik eta pelikularik ez*******\n");
+		 System.out.println("Filma eta pelikula guztiak irakurriko dira orain:\n\n ");
+		 cHau.fitxategiaIreki("Fitxategiak/probakPageRank.txt");
+		 cHau.fitxategiaIrakurri();
+		 cHau.fitxategiaItxi();
+		 
+		 //Irakurritako aktore eta pelikula kopuruak adierazten
+		 System.out.println("\nAktore kopurua: " + AktoreGuztiak.getNireAktoreak().luzera());
+		 System.out.println("\nPelikula kopurua: " + PelikulaGuztiak.getNirePelikulak().luzera());
+		 
+		 
+		 
+		 gHau.grafoaSortu(AktoreGuztiak.getNireAktoreak(), PelikulaGuztiak.getNirePelikulak());
+		 System.out.println("\nGrafoaren nodo kopurua: " + gHau.size()+"\n\n\n\n");
+		 //gHau.grafoaInprimatu();
+		 
+		 gHau.pageRank();
+		 
+		 
+		 
+		 //1. Bilatzailean sartutako elementua null izatea (null)
+		 System.out.println("\n\n\n");
+		 System.out.println("\t\t\t*******1. Bilatzailean sartutako elementua null izatea (null)*******\n");
+		 ArrayList<Zinematografikoa> emaitza1 =  gHau.bilatzailea(null);
+		 assertNull(emaitza1);
+		 System.out.println("Null bueltatu du.");
+	
+		 
+		 
+		 
+		 //2. Bilatzailean sartutako elementua grafoan ez dago (null eta errore mezua)
+		 System.out.println("\n\n\n");
+		 System.out.println("\t\t\t*******2. Bilatzailean sartutako elementua grafoan ez dago (null eta errore mezua)*******\n");
+		 
+		 Zinematografikoa ezDagoena = new Aktorea("Ez nago, Zerrendan");
+		 ArrayList<Zinematografikoa> emaitza2 =  gHau.bilatzailea(ezDagoena);
+		 assertNull(emaitza2);
+		 System.out.println("Null bueltatu du.");
+		 
+		 
+		 
+		 //3. Bilatzailean sartutako elementua grafoan dago eta auzokide bakarra dauka (Pitt).
+		 System.out.println("\n\n\n");
+		 System.out.println("\t\t\t*******3. Bilatzailean sartutako elementua grafoan dago eta auzokide bakarra dauka (Pitt)*******\n");
+		 
+		 Zinematografikoa troya = PelikulaGuztiak.getNirePelikulak().pelikulaBilatu("Troya");
+		 ArrayList<Zinematografikoa> emaitza3 =  gHau.bilatzailea(troya);
+		 assertNotNull(emaitza3);//elementu bakarra pantailaratuko da (Pitt)
+		 
+		 
+		 
+		 /*4. Bilatzailean sartutako elementua grafoan dago eta bi auzokide ditu.
+		  	  Zerrenda handienetik txikienera ordenatuta egongo da.*/
+		 System.out.println("\n\n\n");
+		 System.out.println("\t\t\t*******4. Bilatzailean sartutako elementua grafoan dago eta bi auzokide ditu. *******\n");
+		 System.out.println("Zerrenda handienetik txikienera ordenatuta egongo da.");
+		 Zinematografikoa waltz = AktoreGuztiak.getNireAktoreak().aktoreaBilatu("Waltz");
+		 ArrayList<Zinematografikoa> emaitza4 =  gHau.bilatzailea(waltz);
+		 assertNotNull(emaitza4);
+		 assertTrue(gHau.ordenatutaDago(emaitza4));
+		 
+		 
+		 
+		 
+		 
+		 /*5. Bilatzailean sartutako elementua grafoan dago eta auzokide anitz ditu.
+	  	      Zerrenda handienetik txikienera ordenatuta egongo da.*/
+		 System.out.println("\n\n\n");
+		 System.out.println("\t\t\t*******4. Bilatzailean sartutako elementua grafoan dago eta bi auzokide ditu. *******\n");
+		 System.out.println("Zerrenda handienetik txikienera ordenatuta egongo da.");
+		 Zinematografikoa pitt = AktoreGuztiak.getNireAktoreak().aktoreaBilatu("Pitt");
+		 ArrayList<Zinematografikoa> emaitza5 =  gHau.bilatzailea(pitt);
+		 assertNotNull(emaitza5);
+		 assertTrue(gHau.ordenatutaDago(emaitza5));
+		 
 		
 	}
 	
