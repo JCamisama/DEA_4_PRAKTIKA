@@ -318,7 +318,9 @@ public class GraphHash {
 				/*PostB: Elementu bakoitzari bere pageRank-a esleituko zaio. Gainera, elementu-pageRank
 				 		 egitura duen HashMap bat bueltatuko du.
 				 */
-				//Kostua:
+				/*Kostua: O( n+ i(n*m + 2n), non 'n' grafoaren elementu kopurua, 'm' elementu bakoitzaren auzokide
+				 		  kopurua eta 'i' iterazio kopurua diren.
+				 */
 		
 		HashMap<Zinematografikoa, Double> emaitza = new HashMap<Zinematografikoa, Double>();
 		double danpingFactor = 0.85;
@@ -385,13 +387,19 @@ public class GraphHash {
 			
 	private double pageRankKalkulatu(Zinematografikoa pUnekoa, int pKopTotala, double pDamping){
 		
+		//AurreB: Elementua ez da null izango eta kopurua 0 baino handiagoa.
+		/*PostB:  Elementuaren pageRank-a kalkulatu eta bueltatuko da formula erabiliz.
+		 */
+		/*Kostua: O(m), non 'm' elementuarekin batez-beste zenbat elementu erlazionatuta dauden
+				  adierazten duen zenbakia da. (pelikulentzat 13 eta aktoreentzat 2)*/
+		
 		double emaitza		= 0.00;
 		double batukaria	= 0.00; 
 		
 		//Objektuari apuntatzen dioten elementuen zerrenda hartzen
 		ArrayList<Zinematografikoa> apuntatzenDiote = this.grafoa.get(pUnekoa);
 		Iterator<Zinematografikoa> itr				= apuntatzenDiote.iterator();
-		Zinematografikoa apuntatzenDiona				= null;
+		Zinematografikoa apuntatzenDiona			= null;
 		
 		//pageRank-aren kalkulurako beharrezkoa den batukaria zehazten
 		while(itr.hasNext()){
@@ -406,6 +414,13 @@ public class GraphHash {
 	}
 	
 	private double erroreaKalkulatu(HashMap<Zinematografikoa, Double> pPageRankenTaula){
+		
+		//AurreB: pageRank-en taula beteta egongo da.
+		/*PostB:  Iterazioaren errorea kalkulatu eta bueltatuko da (elementu bakoitzaren aurreko
+		 		  eta uneko pageRank-en kenketaren balio absolutua kalkulatu eta guztien batura
+		 		  bueltatuko da).
+		 */
+		/*Kostua: O(n), non 'n' taularen elementu kopurua den*/
 		
 		double errorea = 0.00;
 		
