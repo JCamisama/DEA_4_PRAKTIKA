@@ -252,7 +252,6 @@ public class GraphHashTest {
 		 //Behin eta berriro elementuak sartzeko erabiliko diren erakusleak
 		 Zinematografikoa zine1  = null;
 		 int 			  a		 = 0;
-		 int			  b		 = 0;
 		 int			  probak = 25;
 		 
 		 //Batez-besteko denbora, maximoa eta minimoa
@@ -306,7 +305,7 @@ public class GraphHashTest {
 		 System.out.println("\nDenbora minimoa: "+minimoa+" segundu.\n\n");
 				
 			 
-			 gHau.erreseteatuFrogetan();
+		 gHau.erreseteatuFrogetan();
 	
 	}
 	
